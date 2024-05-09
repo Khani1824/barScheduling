@@ -7,7 +7,9 @@ import java.util.Random;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 
-public class DrinkOrder  {
+public class DrinkOrder implements Comparable<DrinkOrder>  {
+
+
 
     //DO NOT change the code below
     public enum Drink { 
@@ -81,6 +83,11 @@ public class DrinkOrder  {
     	while(!orderComplete.get()) {
     		this.wait();
     	}
+    }
+
+    @Override
+    public int compareTo(DrinkOrder otherDrinkOrder) {
+        return Integer.compare(this.getExecutionTime(), otherDrinkOrder.getExecutionTime());
     }
     
     @Override
