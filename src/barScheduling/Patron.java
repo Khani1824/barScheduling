@@ -49,7 +49,12 @@ public class Patron extends Thread {
 	        sleep(arrivalTime);// Patrons arrive at staggered  times depending on ID 
 			System.out.println("thirsty Patron "+ this.ID +" arrived");
 			//END do not change
-			
+
+
+			long executionTime = 0;
+			long totalOrder = 0;
+			long firstInstance = 0;
+
 	        //create drinks order
 	        for(int i=0;i<lengthOfOrder;i++) {
 	        	drinksOrder[i]=new DrinkOrder(this.ID);
@@ -63,12 +68,28 @@ public class Patron extends Thread {
 			}
 			for(int i=0;i<lengthOfOrder;i++) {
 				drinksOrder[i].waitForOrder();
+				//TODO
+				//Assistance in calculating response time
+				if(i == 0){
+					firstInstance = System.currentTimeMillis();
+				}
 			}
 
 			endTime = System.currentTimeMillis();
 			long totalTime = endTime - startTime;
-			
-			writeToFile( String.format("%d,%d,%d\n",ID,arrivalTime,totalTime));
+			long responseTime = firstInstance - startTime;
+
+			// TODO
+			// Calculating Waiting time
+			int i;
+			for( i = 0; i < drinksOrder.length; i++){
+				executionTime = drinksOrder[i].getExecutionTime();
+				totalOrder = totalOrder + executionTime;
+			}
+			long waitingTime = totalTime - totalOrder;
+
+
+			writeToFile( String.format("%d,%d,%d,%d,%d\n",ID,arrivalTime,totalTime, waitingTime, responseTime));
 			System.out.println("Patron "+ this.ID + " got order in " + totalTime);
 			
 			

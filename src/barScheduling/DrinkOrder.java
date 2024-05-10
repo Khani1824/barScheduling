@@ -60,6 +60,12 @@ public class DrinkOrder implements Comparable<DrinkOrder>  {
     	orderComplete = new AtomicBoolean(false);
     	orderer=patron;
     }
+
+    @Override
+    // Compares the times of each drinks
+    public int compareTo(DrinkOrder otherDrinkOrder) {
+        return Integer.compare(this.getExecutionTime(), otherDrinkOrder.getExecutionTime());
+    }
     
     public static Drink getRandomDrink() {
         Drink[] drinks = Drink.values();  // Get all enum constants
@@ -85,11 +91,7 @@ public class DrinkOrder implements Comparable<DrinkOrder>  {
     	}
     }
 
-    @Override
-    public int compareTo(DrinkOrder otherDrinkOrder) {
-        return Integer.compare(this.getExecutionTime(), otherDrinkOrder.getExecutionTime());
-    }
-    
+
     @Override
     public String toString() {
         return Integer.toString(orderer) +": "+ drink.getName();

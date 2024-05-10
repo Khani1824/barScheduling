@@ -25,7 +25,8 @@ public class Barman extends Thread {
 		if (schedAlg==0)
 			this.orderQueue = new LinkedBlockingQueue<>();
 		//FIX below
-		else this.orderQueue = new PriorityBlockingQueue<>(); //this just does the same thing
+		// Uses priority Block Queue
+		else this.orderQueue = new PriorityBlockingQueue<>(); //this creates a priority
 		
 	    this.startSignal=startSignal;
 	}
