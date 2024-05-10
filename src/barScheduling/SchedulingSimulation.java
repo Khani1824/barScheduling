@@ -7,13 +7,16 @@ package barScheduling;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
 
 
 public class SchedulingSimulation {
-	static int noPatrons=100; //number of customers - default value if not provided on command line
+	static int noPatrons=300; //number of customers - default value if not provided on command line
 	static int sched=1; //which scheduling algorithm, 0 = FCFS changed it to 1 = SJF
 			
 	static CountDownLatch startSignal;
+
+	static AtomicInteger increment = new AtomicInteger(0);
 
 	
 	static Patron[] patrons; // array for customer threads
@@ -37,20 +40,23 @@ public class SchedulingSimulation {
 			noPatrons=Integer.parseInt(args[0]);  //total people to enter room
 			sched=Integer.parseInt(args[1]); 
 		}
-		
-		writer = new FileWriter("turnaround_time_"+Integer.toString(sched)+".txt", false);
+
+		//Change outputfrile to exel file
+		writer = new FileWriter("AllTimes"+Integer.toString(sched)+".txt", false);
 		Patron.fileW=writer;
 
 		startSignal= new CountDownLatch(noPatrons+2);//Barman and patrons and main method must be raeady
 		
 		//create barman
-        Andre= new Barman(startSignal,sched); 
+		//saul
+        Andre= new Barman(startSignal,sched,increment);
      	Andre.start();
   
 	    //create all the patrons, who all need access to Andre
+		//saul
 		patrons = new Patron[noPatrons];
 		for (int i=0;i<noPatrons;i++) {
-			patrons[i] = new Patron(i,startSignal,Andre);
+			patrons[i] = new Patron(i,startSignal,Andre,increment);
 			patrons[i].start();
 		}
 		

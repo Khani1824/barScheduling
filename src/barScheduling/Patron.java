@@ -6,6 +6,8 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Random;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.atomic.AtomicInteger;
+
 
 //
 public class Patron extends Thread {
@@ -21,15 +23,18 @@ public class Patron extends Thread {
 	
 	public static FileWriter fileW;
 
+	AtomicInteger increment;
+
 
 	private DrinkOrder [] drinksOrder;
 	
-	Patron( int ID,  CountDownLatch startSignal, Barman aBarman) {
+	Patron( int ID,  CountDownLatch startSignal, Barman aBarman, AtomicInteger increment) {
 		this.ID=ID;
 		this.startSignal=startSignal;
 		this.theBarman=aBarman;
 		this.lengthOfOrder=random.nextInt(5)+1;//between 1 and 5 drinks
 		drinksOrder=new DrinkOrder[lengthOfOrder];
+		this.increment = increment;
 	}
 	
 	public  void writeToFile(String data) throws IOException {
@@ -53,7 +58,7 @@ public class Patron extends Thread {
 
 			long executionTime = 0;
 			long totalOrder = 0;
-			long firstInstance = 0;
+			long firstInstanceOfDrink = 0;
 
 	        //create drinks order
 	        for(int i=0;i<lengthOfOrder;i++) {
@@ -70,28 +75,33 @@ public class Patron extends Thread {
 				drinksOrder[i].waitForOrder();
 				//TODO
 				//Assistance in calculating response time
-				if(i == 0){
-					firstInstance = System.currentTimeMillis();
+				if(i == 0 ){
+					firstInstanceOfDrink= System.currentTimeMillis();
 				}
 			}
 
 			endTime = System.currentTimeMillis();
+
+			increment.incrementAndGet();
 			long totalTime = endTime - startTime;
-			long responseTime = firstInstance - startTime;
+
+			// Calculation of response time
+			long responseTime = firstInstanceOfDrink - startTime;
 
 			// TODO
 			// Calculating Waiting time
 			int i;
 			for( i = 0; i < drinksOrder.length; i++){
+				// gets how long it takes to make a drink
 				executionTime = drinksOrder[i].getExecutionTime();
 				totalOrder = totalOrder + executionTime;
 			}
 			long waitingTime = totalTime - totalOrder;
 
 
-			writeToFile( String.format("%d,%d,%d,%d,%d\n",ID,arrivalTime,totalTime, waitingTime, responseTime));
+			writeToFile( String.format("%d,%d,%d\n",responseTime,waitingTime,totalTime));
 			System.out.println("Patron "+ this.ID + " got order in " + totalTime);
-			
+
 			
 		} catch (InterruptedException e1) {  //do nothing
 		} catch (IOException e) {
