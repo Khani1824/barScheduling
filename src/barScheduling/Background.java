@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Background implements Runnable {
-
     AtomicInteger count;
 
 
@@ -21,4 +20,5 @@ public class Background implements Runnable {
         count.set(0);
 
     }
+
 }

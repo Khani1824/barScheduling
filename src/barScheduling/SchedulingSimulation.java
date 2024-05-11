@@ -12,7 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 public class SchedulingSimulation {
 	static int noPatrons=300; //number of customers - default value if not provided on command line
-	static int sched=1; //which scheduling algorithm, 0 = FCFS changed it to 1 = SJF
+	static int sched= 0; //which scheduling algorithm, 0 = FCFS changed it to 1 = SJF
 			
 	static CountDownLatch startSignal;
 
@@ -42,7 +42,7 @@ public class SchedulingSimulation {
 		}
 
 		//Change outputfrile to exel file
-		writer = new FileWriter("AllTimes"+Integer.toString(sched)+".txt", false);
+		writer = new FileWriter("FCFSAllTimes"+Integer.toString(sched)+".txt", false);
 		Patron.fileW=writer;
 
 		startSignal= new CountDownLatch(noPatrons+2);//Barman and patrons and main method must be raeady
